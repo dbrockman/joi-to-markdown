@@ -1,7 +1,7 @@
 /**
  * Validation schema for UBI trip end message.
  */
-const joi = require('@springworks/input-validator').joi;
+const joi = require('joi');
 const number = joi.number();
 const positiveNumber = number.positive();
 const positiveInteger = positiveNumber.integer();
