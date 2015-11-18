@@ -1,6 +1,6 @@
-var joi = require('joi');
-var rmdt = require('reformat-markdown-table');
-var internals = {};
+const joi = require('joi');
+const rmdt = require('reformat-markdown-table');
+const internals = {};
 
 
 internals.headers = [
@@ -18,30 +18,30 @@ internals.headers = [
   'renames',
   'examples',
   'notes',
-  'tags'
+  'tags',
 ];
 
 
 exports.convertSchema = function(schema) {
-  var records = internals.convertSchemaToRecords(schema);
-  var table = internals.convertRecordsToMarkdownTable(records, internals.headers);
+  const records = internals.convertSchemaToRecords(schema);
+  const table = internals.convertRecordsToMarkdownTable(records, internals.headers);
 
   return {
     md: table,
-    records: records
+    records: records,
   };
 };
 
 
 internals.convertSchemaToRecords = function(schema) {
-  var rows = [];
+  const rows = [];
 
   if (!schema || !schema.isJoi) {
-    return;
+    return [];
   }
 
   internals.appendRecordsFromSchema(rows, schema, undefined, {
-    presence: 'optional'
+    presence: 'optional',
   });
 
   return rows;
@@ -49,22 +49,22 @@ internals.convertSchemaToRecords = function(schema) {
 
 
 internals.appendRecordsFromSchema = function(rows, schema, key, parent_settings) {
-  var row = {
+  const row = {
     path: key,
     type: schema._type,
     description: schema._description,
     unit: schema._unit,
     examples: internals.codeList(schema._examples),
     notes: internals.codeList(schema._notes),
-    tags: internals.codeList(schema._tags)
+    tags: internals.codeList(schema._tags),
   };
 
-  var settings = internals.mergeObjects(parent_settings, schema._settings);
+  const settings = internals.mergeObjects(parent_settings, schema._settings);
 
   rows.push(row);
 
   if ('default' in schema._flags) {
-    row.default = '`' + JSON.stringify(schema._flags.default) + '`';
+    row.default = `\`${JSON.stringify(schema._flags.default)}\``;
   }
 
   row.presence = schema._flags.presence || settings.presence;
@@ -73,51 +73,50 @@ internals.appendRecordsFromSchema = function(rows, schema, key, parent_settings)
   if (schema._flags.format) {
     row.conforms.push({
       name: 'format',
-      arg: schema._flags.format === joi.date().iso()._flags.format ? 'iso' : schema._flags.format
+      arg: schema._flags.format === joi.date().iso()._flags.format ? 'iso' : schema._flags.format,
     });
   }
   if (schema._flags.insensitive) {
     row.conforms.push({
-      name: 'insensitive'
+      name: 'insensitive',
     });
   }
-  row.conforms = row.conforms.map(function(test) {
-    var s = test.name, v = test.arg;
+  row.conforms = row.conforms.map(test => {
+    let s = test.name;
+    const v = test.arg;
     if (v !== undefined) {
       s += ': ';
       s += v.toISOString ? v.toISOString() : v;
     }
-    return '`' + s + '`';
+    return `\`${s}\``;
   }).join(', ');
 
-  // TODO: Support undefined and null
   if (schema._valids._set.length) {
     row[
-      schema._flags.allowOnly ? 'valids' : 'allowed'
-    ] = internals.codeList(schema._valids._set, true);
+        schema._flags.allowOnly ? 'valids' : 'allowed'
+        ] = internals.codeList(schema._valids._set, true);
   }
 
-  // TODO: Support undefined and null
   if (schema._invalids._set.length) {
     row.invalids = internals.codeList(schema._invalids._set, true);
   }
 
   if (schema._inner.dependencies && schema._inner.dependencies.length) {
-    row.dependencies = schema._inner.dependencies.map(function(dep) {
-      var peers = internals.codeList(dep.peers, false, ', ');
+    row.dependencies = schema._inner.dependencies.map(dep => {
+      const peers = internals.codeList(dep.peers, false, ', ');
       switch (dep.type) {
         case 'and':
-          return 'If one is present, all are required: ' + peers + '.';
+          return `If one is present, all are required: ${peers}.}`;
         case 'nand':
-          return 'If one is present, the others may not all be present: ' + peers + '.';
+          return `If one is present, the others may not all be present: ${peers}.}`;
         case 'or':
-          return 'At least one must appear: ' + peers + '.';
+          return `At least one must appear: ${peers}.}`;
         case 'xor':
-          return 'One and only one must appear: ' + peers + '.';
+          return `One and only one must appear: ${peers}.}`;
         case 'with':
-          return 'If `' + dep.key + '` is present, ' + peers + ' must appear.';
+          return `If \`${dep.key}\` is present, ${peers} must appear.}`;
         case 'without':
-          return 'If `' + dep.key + '` is present, ' + peers + ' must not appear.';
+          return `If \`${dep.key}\` is present, ${peers} must not appear.}`;
         default:
           return '';
       }
@@ -125,8 +124,9 @@ internals.appendRecordsFromSchema = function(rows, schema, key, parent_settings)
   }
 
   if (schema._inner.renames && schema._inner.renames.length) {
-    row.renames = schema._inner.renames.map(function(rename) {
-      var s = rename.from + ' -> ' + rename.to, opt = [];
+    row.renames = schema._inner.renames.map(rename => {
+      let s = `${rename.from} -> ${rename.to}`;
+      let opt = [];
       if (rename.options.alias) {
         opt.push('alias');
       }
@@ -138,14 +138,14 @@ internals.appendRecordsFromSchema = function(rows, schema, key, parent_settings)
       }
       opt = opt.join(',');
       if (opt) {
-        s += ' (' + opt + ')';
+        s += ` (${opt})`;
       }
-      return '`' + s + '`';
+      return `\`${s}\``;
     }).join(' ');
   }
 
   if (schema._inner.matches) {
-    schema._inner.matches.forEach(function(match) {
+    schema._inner.matches.forEach(match => {
       if (match.schema) {
         internals.appendRecordsFromSchema(rows, match.schema, key, settings);
       }
@@ -153,54 +153,58 @@ internals.appendRecordsFromSchema = function(rows, schema, key, parent_settings)
   }
 
   if (schema._inner.inclusions) {
-    schema._inner.inclusions.forEach(function(sub_schema, i) {
-      var k = (key || '') + '[+' + i + ']';
+    schema._inner.inclusions.forEach((sub_schema, i) => {
+      const k = `${(key || '')} [+${i} ]`;
       internals.appendRecordsFromSchema(rows, sub_schema, k, settings);
     });
   }
   if (schema._inner.exclusions) {
-    schema._inner.exclusions.forEach(function(sub_schema, i) {
-      var k = (key || '') + '[-' + i + ']';
+    schema._inner.exclusions.forEach((sub_schema, i) => {
+      const k = `${(key || '')} [-${i} ]`;
       internals.appendRecordsFromSchema(rows, sub_schema, k, settings);
     });
   }
 
   if (schema._inner.children) {
-    schema._inner.children.forEach(function(child) {
-      var k = key ? key + '.' + child.key : child.key;
+    schema._inner.children.forEach(child => {
+      const k = key ? `${key}.${child.key}` : child.key;
       internals.appendRecordsFromSchema(rows, child.schema, k, settings);
     });
   }
 
   if (schema._type === 'object' && Array.isArray(schema._inner.patterns)) {
-    schema._inner.patterns.forEach(function(pattern) {
-      var k = key ? key + ' ' : '';
+    schema._inner.patterns.forEach(pattern => {
+      const k = key ? `${key} ` : '';
       internals.appendRecordsFromSchema(rows, pattern.rule, k + pattern.regex, settings);
     });
   }
 };
 
 
-internals.codeList = function(arr, to_json, sep) {
+internals.codeList = (inarr, to_json, insep) => {
+  let arr = inarr;
+  let sep = insep;
   if (!arr || !arr.length) {
     return undefined;
   }
   if (to_json) {
-    arr = arr.map(function(v) {
+    arr = arr.map(v => {
       return JSON.stringify(v);
     });
   }
   sep = sep || ' ';
-  return '`' + arr.join('`' + sep + '`') + '`';
+  return `\`${arr.join(`\`${sep}\``)}\``;
 };
 
 
-internals.convertRecordsToMarkdownTable = function(records, headers) {
-  var table,
-      body;
+internals.convertRecordsToMarkdownTable = (records, inheaders) => {
+  let table;
+  let body;
+  let headers = inheaders;
 
-  headers = headers.filter(function(k) {
-    var i, v;
+  headers = headers.filter(k => {
+    let i;
+    let v;
     for (i = records.length - 1; i >= 0; i--) {
       v = records[i][k];
       if (v !== null && v !== undefined && v !== '') {
@@ -210,9 +214,9 @@ internals.convertRecordsToMarkdownTable = function(records, headers) {
     return false;
   });
 
-  body = records.map(function(rec) {
-    return headers.map(function(k, i) {
-      var v = rec[k];
+  body = records.map(rec => {
+    return headers.map((k, i) => {
+      let v = rec[k];
       if (v === null || v === undefined) {
         return i > 0 ? '' : '-';
       }
@@ -223,7 +227,7 @@ internals.convertRecordsToMarkdownTable = function(records, headers) {
     }).join('|');
   }).join('\n');
 
-  table = headers.join('|') + '\n\n' + body;
+  table = `${headers.join('|')}\n\n${body}`;
   table = rmdt.reformat(table);
 
   return table;
@@ -231,9 +235,14 @@ internals.convertRecordsToMarkdownTable = function(records, headers) {
 
 
 internals.mergeObjects = function() {
-  var result = {},
-      args = arguments, arg_i = 0, args_l = args.length, arg,
-      keys, key_i, key;
+  const result = {};
+  const args = arguments;
+  let arg_i = 0;
+  const args_l = args.length;
+  let arg;
+  let keys;
+  let key_i;
+  let key;
 
   for (; arg_i < args_l; arg_i++) {
     arg = args[arg_i];
