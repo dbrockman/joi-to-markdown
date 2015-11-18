@@ -5,9 +5,6 @@ var path_util = require('path');
 var joi = require('joi');
 var convertSchema = require('..').convertSchema;
 
-require('chai').should();
-
-
 describe('Testing all examples', function() {
   forEachExample(function(file_name, schema, table) {
     it(file_name, function() {
