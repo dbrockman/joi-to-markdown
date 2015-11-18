@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const joiToMarkdown = require('../index.js');
+const joiToMarkdown = require('../src/index');
 const resources = fs.readdirSync(path.join(__dirname, '../resources'));
 
 describe(__filename, () => {

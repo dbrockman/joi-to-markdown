@@ -13,5 +13,12 @@ node_modules
 .idea
 .eslintcache
 
-### Do not commit build output
-lib
+# Do not publish src, only build output
+examples
+fixtures
+resources
+src
+test
+.eslintrc
+.eslintignore
+.travis.yml
