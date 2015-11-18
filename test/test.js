@@ -1,8 +1,8 @@
 const file_system = require('fs');
 const path_util = require('path');
-const convertSchema = require('..').convertSchema;
+const convertSchema = require('../src/index').convertSchema;
 // joi used in eval below
-const joi = require('Joi');  //eslint-disable-line no-unused-vars
+const joi = require('joi');  //eslint-disable-line no-unused-vars
 
 describe('Testing all examples', () => {
   forEachExample((file_name, schema, table) => {

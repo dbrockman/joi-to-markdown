@@ -2,11 +2,13 @@
   "name": "joi-to-markdown",
   "version": "1.0.0",
   "description": "Convert Joi schemas to markdown tables",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "eslint --cache .",
-    "test": "NODE_ENV=test istanbul cover _mocha",
-    "test-no-cov": "NODE_ENV=test mocha"
+    "test": "mocha test",
+    "test-cov": "istanbul cover _mocha test",
+    "build": "rm -rf lib && babel src --out-dir lib",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "joi": "^7.0.0",
@@ -14,8 +16,10 @@
   },
   "devDependencies": {
     "@springworks/test-harness": "^1.2.2",
-    "babel": "^5.8.34",
+    "babel-cli": "6.1.18",
+    "babel-core": "6.1.21",
     "babel-eslint": "^4.1.5",
+    "babel-preset-es2015-node4": "2.0.0",
     "eslint": "^1.9.0",
     "eslint-config-springworks": "^4.0.1",
     "eslint-plugin-import": "^0.9.1",

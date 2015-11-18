@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - '4'
+before_install:
+  - npm i -g npm
+before_script:
+  - npm prune
+  - npm i
+script:
+  - npm run lint
+  - npm test
+sudo: false
+notifications:
+  email: false

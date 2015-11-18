@@ -3,7 +3,7 @@ const rmdt = require('reformat-markdown-table');
 const internals = {};
 
 
-internals.headers = [
+const HEADERS = [
   'path',
   'type',
   'presence',
@@ -24,7 +24,7 @@ internals.headers = [
 
 exports.convertSchema = function(schema) {
   const records = internals.convertSchemaToRecords(schema);
-  const table = internals.convertRecordsToMarkdownTable(records, internals.headers);
+  const table = internals.convertRecordsToMarkdownTable(records, HEADERS);
 
   return {
     md: table,
