@@ -11,20 +11,20 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "joi": "^7.0.0",
+    "joi": "^10.2.0",
     "reformat-markdown-table": "^1.1.0"
   },
   "devDependencies": {
     "@springworks/test-harness": "^1.2.2",
-    "babel-cli": "6.1.18",
-    "babel-core": "6.1.21",
-    "babel-eslint": "^4.1.5",
-    "babel-preset-es2015-node4": "2.0.0",
-    "eslint": "^1.9.0",
-    "eslint-config-springworks": "^4.0.1",
-    "eslint-plugin-import": "^0.9.1",
-    "eslint-plugin-mocha": "^1.0.0",
-    "eslint-plugin-should-promised": "^1.0.5",
+    "babel-cli": "6.22.2",
+    "babel-core": "6.22.1",
+    "babel-eslint": "^7.1.1",
+    "babel-preset-es2015-node4": "2.1.1",
+    "eslint": "^3.14.0",
+    "eslint-config-springworks": "^7.0.7",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-mocha": "^4.8.0",
+    "eslint-plugin-should-promised": "^2.0.0",
     "istanbul": "^0.4.0"
   },
   "repository": {
